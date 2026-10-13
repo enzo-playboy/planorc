@@ -1,0 +1,12 @@
+{
+  "name": "planorc",
+  "description": "Automação Inteligente de Medição de Plantas & Orçamento de Obras (OpenTakeoff MCP + SINAPI + BDI TCU + Caixa Excel)",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/testar-orcamento.mjs",
+    "test:orcamento": "node scripts/testar-orcamento.mjs",
+    "type-check": "tsc --noEmit"
+  }
+}

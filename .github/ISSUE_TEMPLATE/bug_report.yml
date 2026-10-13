@@ -1,0 +1,45 @@
+name: 🐛 Relato de Bug (Bug Report)
+description: Crie um relatório de erro para ajudar a melhorar o PlanOrc
+title: "[BUG]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por relatar um problema! Por favor, preencha os detalhes abaixo para que possamos investigar.
+  - type: input
+    id: component
+    attributes:
+      label: Módulo ou Componente Afetado
+      description: Ex.: Shoelace m², Regras SINAPI, BDI TCU 2622/2013, Exportador Excel Caixa, MCP Takeoff
+      placeholder: ex: Exportador Excel Caixa
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição do Problema
+      description: O que aconteceu e qual era o comportamento esperado?
+      placeholder: Ao processar a prancha com esquadrias...
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Passos para Reproduzir
+      description: Como podemos reproduzir o erro?
+      value: |
+        1. Fazer upload do arquivo '...'
+        2. Configurar escala '...'
+        3. Clicar em Processar Orçamento
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Ambiente
+      description: Sistema Operacional, versão do Node, navegador, etc.
+      value: |
+        - SO: Windows / Linux / macOS
+        - Node: 20.x
+        - Navegador: Chrome / Edge

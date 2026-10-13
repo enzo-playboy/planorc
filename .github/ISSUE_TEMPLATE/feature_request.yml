@@ -1,0 +1,28 @@
+name: 💡 Sugestão de Melhoria (Feature Request)
+description: Sugira uma nova funcionalidade ou aprimoramento para o PlanOrc
+title: "[FEATURE]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Adoramos novas ideias para otimizar os orçamentos de engenharia civil brasileira!
+  - type: textarea
+    id: problem
+    attributes:
+      label: Qual problema essa funcionalidade resolve?
+      description: Uma descrição clara de qual é a necessidade ou dor atual.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solução Proposta
+      description: Como você imagina o funcionamento ideal dessa funcionalidade?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternativas Consideradas
+      description: Alguma solução ou ferramenta alternativa que você já tenha avaliado?

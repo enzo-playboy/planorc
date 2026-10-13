@@ -1,0 +1,9 @@
+.idea
+awesome-claude-code
+node_modules/
+.next/
+dist/
+.turbo/
+*.tsbuildinfo
+.env*.local
+/docs/goals

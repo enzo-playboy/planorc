@@ -1,0 +1,36 @@
+name: PlanOrc Quality & Release Gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  code-quality:
+    name: 🛡️ Code Quality & Hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install --prefer-offline --no-audit
+
+      - name: Validate Engineering & Budget Pipeline
+        run: node scripts/testar-orcamento.mjs
+
+      - name: Validate No Secret Leaks
+        run: |
+          echo "Verificando ausência de chaves de API expostas..."
+          if grep -rn "sk-" src/ || grep -rn "AIza" src/; then
+            echo "ERRO: Possível chave de API detectada no código fonte!"
+            exit 1
+          fi
+          echo "Nenhum vazamento de credenciais encontrado."

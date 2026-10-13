@@ -1,0 +1,4 @@
+# Maintainer review for PlanOrc repository automation and core modules.
+* @enzo-playboy
+.github/workflows/** @enzo-playboy
+src/core/** @enzo-playboy
