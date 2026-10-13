@@ -8,19 +8,28 @@ Write-Host ""
 
 Set-Location -Path "D:\reverse"
 
-Write-Host "[1/4] Configurando autor do Git e remote..." -ForegroundColor Yellow
+Write-Host "[1/5] Executando bateria de testes pesados (Heavy Stress Tests)..." -ForegroundColor Yellow
+node scripts/heavy-stress-test.mjs
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "ERRO CRITICO: Os testes pesados falharam! Envio para o GitHub abortado." -ForegroundColor Red
+    exit 1
+}
+Write-Host "TESTES APROVADOS COM SUCESSO!" -ForegroundColor Green
+Write-Host ""
+
+Write-Host "[2/5] Configurando autor do Git e remote..." -ForegroundColor Yellow
 git config user.name "enzo-playboy"
 git config user.email "enzo@planorc.com.br"
 git remote set-url origin https://github.com/enzo-playboy/planorc.git
 
-Write-Host "[2/4] Adicionando arquivos limpos do PlanOrc..." -ForegroundColor Yellow
+Write-Host "[3/5] Adicionando arquivos limpos do PlanOrc..." -ForegroundColor Yellow
 git add -A
 
-Write-Host "[3/4] Criando commit inicial do PlanOrc..." -ForegroundColor Yellow
-git commit -m "feat: inicializacao oficial do PlanOrc - Medicao de Plantas & Orcamento Civil (OpenTakeoff MCP + SINAPI + Caixa Excel)"
+Write-Host "[4/5] Criando commit do PlanOrc..." -ForegroundColor Yellow
+git commit -m "feat(tests): suite de testes pesados (Shoelace, BDI TCU, SINAPI, Caixa Excel & 1k comodos)"
 git branch -M main
 
-Write-Host "[4/4] Enviando para o GitHub (sobrescrevendo o conteudo antigo)..." -ForegroundColor Yellow
+Write-Host "[5/5] Enviando para o GitHub (sobrescrevendo o conteudo antigo)..." -ForegroundColor Yellow
 git push -u origin main --force
 
 Write-Host ""

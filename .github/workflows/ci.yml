@@ -43,8 +43,11 @@ jobs:
         run: npx tsc --noEmit
         continue-on-error: true
 
-      - name: 🧪 Run Civil Engineering & Budgeting Pipeline Tests
+      - name: 🧪 Run Civil Engineering Quick Smoke Tests
         run: node scripts/testar-orcamento.mjs
+
+      - name: 🏋️ Run Heavy Stress Test Suite (Shoelace, BDI TCU, SINAPI, Caixa Excel & 1k Rooms)
+        run: node scripts/heavy-stress-test.mjs
 
       - name: 📐 Validate Core Business Rules & Formulas
         run: |

@@ -5,7 +5,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node scripts/testar-orcamento.mjs",
+    "test": "node scripts/heavy-stress-test.mjs",
+    "test:heavy": "node scripts/heavy-stress-test.mjs",
+    "test:smoke": "node scripts/testar-orcamento.mjs",
     "test:orcamento": "node scripts/testar-orcamento.mjs",
     "type-check": "tsc --noEmit"
   }

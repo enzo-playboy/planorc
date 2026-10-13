@@ -119,12 +119,23 @@ cd planorc
 pnpm install # ou npm install / yarn
 ```
 
-### 2. Testar o Pipeline Orçamentário
+### 2. Executar a Suíte de Testes Pesados & Validação Técnica
 
-Execute o script de demonstração técnica para validar os cálculos e regras do SINAPI:
+O PlanOrc possui uma suíte de testes pesados de estresse com zero dependências externas (`scripts/heavy-stress-test.mjs`), cobrindo:
+1. **Geometria Computacional:** Invariância de Shoelace/Gauss (CW/CCW), translação, polígonos côncavos em L/T/U/Cruz, vértices colineares e convergência circular de N-gons.
+2. **Rigor Matemático do BDI:** Fórmula canônica do TCU Acórdão 2622/2013, quartis oficiais e **Simulação de Monte Carlo com 1.000 iterações aleatórias** provando monotonicidade estrita.
+3. **Engenharia de Custos SINAPI:** Lógica de áreas molhadas vs secas, dedução paramétrica de vãos (NBR 12721) e balanço financeiro exato ($CustoDireto = Material + MãoDeObra$).
+4. **Sanitização XML Caixa:** Escape de caracteres especiais, suporte UTF-8 a acentos da língua portuguesa e balanceamento estrito de tags SpreadsheetML.
+5. **Carga Extrema & Concorrência:** Processamento de **1.000 cômodos em < 500ms** e concorrência assíncrona de 50 projetos simultâneos.
 
 ```bash
-node scripts/testar-orcamento.mjs
+# Executar bateria de testes pesados (100+ asserções)
+npm test
+# ou:
+node scripts/heavy-stress-test.mjs
+
+# Executar teste de fumaça rápido (smoke test)
+npm run test:smoke
 ```
 
 ### 3. Iniciar o Servidor de Desenvolvimento

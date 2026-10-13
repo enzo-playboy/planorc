@@ -7,34 +7,59 @@ import { CategoriaAmbiente, Point2D, PoligonoAmbienteMCP, SimboloDetectado } fro
 
 export class GeometryNormalizer {
   /**
-   * Mapeamento de termos comuns de projetos em português e inglês para categorias padronizadas.
+   * Mapeamento ordenado por especificidade e prioridade arquitetônica.
+   * Ambientes específicos (sanitários, varandas, circulações) têm precedência
+   * sobre qualificadores gerais (ex.: 'bwc suite' -> BANHEIRO, 'circulação dos quartos' -> CIRCULACAO).
    */
-  private static readonly DICIONARIO_CATEGORIAS: Record<string, CategoriaAmbiente> = {
-    sala: 'SALA',
-    estar: 'SALA',
-    jantar: 'SALA',
-    living: 'SALA',
-    dormitorio: 'DORMITORIO',
-    quarto: 'DORMITORIO',
-    bedroom: 'DORMITORIO',
-    suite: 'SUITE',
-    cozinha: 'COZINHA',
-    kitchen: 'COZINHA',
-    banheiro: 'BANHEIRO',
-    wc: 'BANHEIRO',
-    bwc: 'BANHEIRO',
-    lavabo: 'LAVABO',
-    servico: 'AREA_SERVICO',
-    lavanderia: 'AREA_SERVICO',
-    circulacao: 'CIRCULACAO',
-    corredor: 'CIRCULACAO',
-    hall: 'CIRCULACAO',
-    varanda: 'VARANDA',
-    sacada: 'VARANDA',
-    balcony: 'VARANDA',
-    garagem: 'GARAGEM',
-    abrigo: 'GARAGEM',
-  };
+  private static readonly REGRAS_CATEGORIAS: [string, CategoriaAmbiente][] = [
+    // 1. Ambientes Sanitários e Lavabos (prioridade máxima sobre suite/serviço)
+    ['lavabo', 'LAVABO'],
+    ['banheiro', 'BANHEIRO'],
+    ['bwc', 'BANHEIRO'],
+    ['wc', 'BANHEIRO'],
+    ['sanitario', 'BANHEIRO'],
+    ['toilet', 'BANHEIRO'],
+
+    // 2. Sacadas e Varandas (prioridade sobre suite/dormitório)
+    ['varanda', 'VARANDA'],
+    ['sacada', 'VARANDA'],
+    ['balcony', 'VARANDA'],
+    ['terraco', 'VARANDA'],
+
+    // 3. Circulação e Corredores (prioridade sobre quartos/suíte)
+    ['circulacao', 'CIRCULACAO'],
+    ['corredor', 'CIRCULACAO'],
+    ['hall', 'CIRCULACAO'],
+    ['passagem', 'CIRCULACAO'],
+
+    // 4. Áreas de Serviço e Lavanderia
+    ['lavanderia', 'AREA_SERVICO'],
+    ['servico', 'AREA_SERVICO'],
+
+    // 5. Cozinhas
+    ['cozinha', 'COZINHA'],
+    ['kitchen', 'COZINHA'],
+
+    // 6. Garagem
+    ['garagem', 'GARAGEM'],
+    ['abrigo', 'GARAGEM'],
+    ['garage', 'GARAGEM'],
+
+    // 7. Suíte (quando não qualificada por BWC ou Sacada)
+    ['suite', 'SUITE'],
+
+    // 8. Dormitório
+    ['dormitorio', 'DORMITORIO'],
+    ['quarto', 'DORMITORIO'],
+    ['bedroom', 'DORMITORIO'],
+    ['closet', 'DORMITORIO'],
+
+    // 9. Salas e Living
+    ['sala', 'SALA'],
+    ['estar', 'SALA'],
+    ['jantar', 'SALA'],
+    ['living', 'SALA'],
+  ];
 
   /**
    * Calcula a área de um polígono 2D fechado utilizando a Fórmula de Gauss (Shoelace).
@@ -114,12 +139,21 @@ export class GeometryNormalizer {
    * Infere a categoria do ambiente a partir do texto detectado na planta.
    */
   public static inferirCategoria(texto: string): CategoriaAmbiente {
+    if (!texto || typeof texto !== 'string') return 'OUTRO';
+
     const limpo = texto
       .toLowerCase()
       .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/w\.c\./g, 'wc')
+      .replace(/w\.c/g, 'wc')
+      .replace(/b\.w\.c\./g, 'bwc')
+      .replace(/b\.w\.c/g, 'bwc')
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
 
-    for (const [termo, categoria] of Object.entries(this.DICIONARIO_CATEGORIAS)) {
+    for (const [termo, categoria] of this.REGRAS_CATEGORIAS) {
       if (limpo.includes(termo)) {
         return categoria;
       }

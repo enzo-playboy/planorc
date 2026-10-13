@@ -74,7 +74,11 @@ export class OrcamentoService {
     mimeType: string;
   } {
     const conteudoXml = ExcelCaixaGenerator.gerarPlanilhaXml(projeto);
-    const nomeLimpo = projeto.tituloProjeto.toLowerCase().replace(/[^a-z0-9_-]/g, '_');
+    const nomeLimpo = projeto.tituloProjeto
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9_-]/g, '_');
 
     return {
       conteudoXml,

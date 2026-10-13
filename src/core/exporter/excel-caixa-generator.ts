@@ -10,6 +10,19 @@ import { ProjetoOrcamentoBrasil } from '../types/orcamento';
 
 export class ExcelCaixaGenerator {
   /**
+   * Escapa caracteres reservados do XML para prevenir corrupção e injeção no SpreadsheetML.
+   */
+  public static escapeXml(texto: string | null | undefined): string {
+    if (!texto) return '';
+    return String(texto)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&apos;');
+  }
+
+  /**
    * Formata números para o padrão monetário brasileiro.
    */
   private static formatarMoeda(valor: number): string {
@@ -108,7 +121,7 @@ export class ExcelCaixaGenerator {
    <!-- Título -->
    <Row ss:Height="30">
     <Cell ss:MergeAcross="10" ss:StyleID="HeaderPrincipal">
-     <Data ss:Type="String">QUADRO GERAL DE QUANTITATIVOS POR AMBIENTE - ${projeto.tituloProjeto.toUpperCase()}</Data>
+     <Data ss:Type="String">QUADRO GERAL DE QUANTITATIVOS POR AMBIENTE - ${ExcelCaixaGenerator.escapeXml(projeto.tituloProjeto.toUpperCase())}</Data>
     </Cell>
    </Row>
 
@@ -133,8 +146,8 @@ export class ExcelCaixaGenerator {
        (amb, index) => `
    <Row>
     <Cell ss:StyleID="CelulaCentro"><Data ss:Type="String">${(index + 1).toString().padStart(2, '0')}</Data></Cell>
-    <Cell ss:StyleID="CelulaTexto"><Data ss:Type="String">${amb.nome}</Data></Cell>
-    <Cell ss:StyleID="CelulaCentro"><Data ss:Type="String">${amb.categoria}</Data></Cell>
+    <Cell ss:StyleID="CelulaTexto"><Data ss:Type="String">${ExcelCaixaGenerator.escapeXml(amb.nome)}</Data></Cell>
+    <Cell ss:StyleID="CelulaCentro"><Data ss:Type="String">${ExcelCaixaGenerator.escapeXml(amb.categoria)}</Data></Cell>
     <Cell ss:StyleID="CelulaNumero"><Data ss:Type="Number">${amb.areaPisoM2}</Data></Cell>
     <Cell ss:StyleID="CelulaNumero"><Data ss:Type="Number">${amb.perimetroM}</Data></Cell>
     <Cell ss:StyleID="CelulaNumero"><Data ss:Type="Number">${amb.peDireitoM}</Data></Cell>
@@ -185,7 +198,7 @@ export class ExcelCaixaGenerator {
    </Row>
    <Row>
     <Cell ss:MergeAcross="1" ss:StyleID="CelulaTexto"><Data ss:Type="String">Projeto:</Data></Cell>
-    <Cell ss:MergeAcross="4" ss:StyleID="CelulaTexto"><Data ss:Type="String">${projeto.tituloProjeto}</Data></Cell>
+    <Cell ss:MergeAcross="4" ss:StyleID="CelulaTexto"><Data ss:Type="String">${ExcelCaixaGenerator.escapeXml(projeto.tituloProjeto)}</Data></Cell>
     <Cell ss:MergeAcross="1" ss:StyleID="CelulaTexto"><Data ss:Type="String">Taxa BDI Aplicada:</Data></Cell>
     <Cell ss:MergeAcross="2" ss:StyleID="CelulaNumero"><Data ss:Type="Number">${resumoFinanceiro.taxaBdiEfetivaPercentual}</Data></Cell>
    </Row>
@@ -193,7 +206,7 @@ export class ExcelCaixaGenerator {
     <Cell ss:MergeAcross="1" ss:StyleID="CelulaTexto"><Data ss:Type="String">Área Construída:</Data></Cell>
     <Cell ss:MergeAcross="4" ss:StyleID="CelulaTexto"><Data ss:Type="String">${resumoFinanceiro.areaTotalConstruidaM2} m²</Data></Cell>
     <Cell ss:MergeAcross="1" ss:StyleID="CelulaTexto"><Data ss:Type="String">Padrão de Acabamento:</Data></Cell>
-    <Cell ss:MergeAcross="2" ss:StyleID="CelulaTexto"><Data ss:Type="String">${configuracao.padraoAcabamento}</Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="CelulaTexto"><Data ss:Type="String">${ExcelCaixaGenerator.escapeXml(configuracao.padraoAcabamento)}</Data></Cell>
    </Row>
 
    <!-- Cabeçalho das Colunas Técnicas -->
@@ -236,7 +249,7 @@ export class ExcelCaixaGenerator {
       linhas += `
    <Row ss:Height="22">
     <Cell ss:MergeAcross="10" ss:StyleID="HeaderSecundario">
-     <Data ss:Type="String">${(i + 1).toString().padStart(2, '0')}. AMBIENTE: ${amb.nome.toUpperCase()} (${amb.areaPisoM2} m²)</Data>
+     <Data ss:Type="String">${(i + 1).toString().padStart(2, '0')}. AMBIENTE: ${ExcelCaixaGenerator.escapeXml(amb.nome.toUpperCase())} (${amb.areaPisoM2} m²)</Data>
     </Cell>
    </Row>`;
 
@@ -247,9 +260,9 @@ export class ExcelCaixaGenerator {
         linhas += `
    <Row>
     <Cell ss:StyleID="CelulaCentro"><Data ss:Type="String">${itemNumero}</Data></Cell>
-    <Cell ss:StyleID="CelulaCentro"><Data ss:Type="String">${comp.codigoSinapi}</Data></Cell>
-    <Cell ss:StyleID="CelulaTexto"><Data ss:Type="String">${comp.descricao}</Data></Cell>
-    <Cell ss:StyleID="CelulaCentro"><Data ss:Type="String">${comp.unidade}</Data></Cell>
+    <Cell ss:StyleID="CelulaCentro"><Data ss:Type="String">${ExcelCaixaGenerator.escapeXml(comp.codigoSinapi)}</Data></Cell>
+    <Cell ss:StyleID="CelulaTexto"><Data ss:Type="String">${ExcelCaixaGenerator.escapeXml(comp.descricao)}</Data></Cell>
+    <Cell ss:StyleID="CelulaCentro"><Data ss:Type="String">${ExcelCaixaGenerator.escapeXml(comp.unidade)}</Data></Cell>
     <Cell ss:StyleID="CelulaNumero"><Data ss:Type="Number">${comp.quantidade}</Data></Cell>
     <Cell ss:StyleID="CelulaMoeda"><Data ss:Type="Number">${comp.custoUnitarioMaterial}</Data></Cell>
     <Cell ss:StyleID="CelulaMoeda"><Data ss:Type="Number">${comp.custoUnitarioMaoDeObra}</Data></Cell>
